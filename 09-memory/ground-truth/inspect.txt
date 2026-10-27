@@ -1,0 +1,13 @@
+kestrel-fwpack 3.12 (build 4711)
+KFWP v3.12  device 4b530107  2 section(s)  flags 0x1  build 1791763200
+checksum 8995847e  total 204 bytes  verify: ok
+  [0] boot     off 0x0070 size 0x0022 load 0x08000000 crc 931df7e1
+  [1] app      off 0x0092 size 0x003a load 0x08004000 crc 84b8d84c
+kestrel-fwpack 3.12 (build 4712)
+KFWP v3.12  device 4b530107  2 section(s)  flags 0x1  build 1791763200
+checksum 8995847e  total 204 bytes  verify: ok
+  [0] boot     off 0x0070 size 0x0022 load 0x08000000 crc 931df7e1
+  [1] app      off 0x0092 size 0x003a load 0x08004000 crc 84b8d84c
+reference: KFWP v3.12 device 4b530107 sections 2 flags 0x1 checksum stored 8995847e computed 8995847e -> OK
+  boot     crc 931df7e1 OK  b'KESTREL-BOOT\x00\x10 0 stage1 '
+  app      crc 84b8d84c OK  b'lock application image: '

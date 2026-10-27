@@ -1,0 +1,31 @@
+[event] session #1000 -> 1 (HELLO_SENT)
+[event] session #1001 -> 1 (HELLO_SENT)
+[event] session #1000 -> 3 (CHALLENGED)
+[event] session #1000 -> 3 (CHALLENGED)
+[event] session #1000 -> 3 (CHALLENGED)
+[event] session #1000 -> 4 (LOCKED_OUT)
+[event] session #1002 -> 6 (CLOSED)
+[event] session #1001 -> 6 (CLOSED)
+[event] session #1000 -> 6 (CLOSED)
+challenge #1000 nonce=627f7eba
+challenge #1001 nonce=cc26f0cb
+auth #1000 -> 1
+auth #1000 -> 1
+auth #1000 -> 1
+data #1001 -> 11
+doors #1001 -> -1
+failover #1001 -> #1002
+restore -> #1003
+session #1000 [LOCKED_OUT] user=alice flags=0x8 doors=0
+  peer=10.0.0.5:4242 rtt=0ms proto=v2 retries=3 lock_level=1 failed=3
+  created=1791763922 last_seen=1791763922 rx=0/256 cipher=off nonce=627f7eba
+session #1001 [CHALLENGED] user=admin flags=0x9 doors=0
+  peer=10.0.0.9:4243 rtt=11ms proto=v2 retries=3 lock_level=0 failed=0
+  created=1791763922 last_seen=1791763933 rx=11/256 cipher=on nonce=cc26f0cb
+session #1002 [IDLE] user=admin flags=0xc doors=0
+  peer=10.0.1.9:4243 rtt=0ms proto=v2 retries=3 lock_level=0 failed=0
+  created=1791763922 last_seen=1791763922 rx=0/256 cipher=off nonce=00000000
+session #1003 [IDLE] user=bob flags=0x4 doors=0x3
+  peer=192.168.1.20:5000 rtt=0ms proto=v2 retries=3 lock_level=1 failed=0
+  created=1791763922 last_seen=1791763922 rx=0/256 cipher=off nonce=00000000
+expired 4

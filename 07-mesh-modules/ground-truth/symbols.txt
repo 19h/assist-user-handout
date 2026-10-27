@@ -1,0 +1,16 @@
+00000000000010f0 T main
+# libkstore.so (image base 0 in the file; see PREP_ for the database base)
+00000000000011c0 T kstore_door_count
+0000000000001110 T kstore_door_secret
+0000000000001100 T kstore_open
+00000000000011d0 T kstore_version
+# libkcrypto.so (image base 0 in the file; see PREP_ for the database base)
+00000000000013d0 T kc_hex
+0000000000001100 T kc_mac64
+0000000000001360 T kc_mac64_legacy
+0000000000001410 T kc_version
+# libkproto.so (image base 0 in the file; see PREP_ for the database base)
+0000000000001110 t build_challenge_v1
+0000000000001140 t build_challenge_v2
+00000000000011b0 T kproto_v1_entry
+00000000000011c0 T kproto_v2_entry

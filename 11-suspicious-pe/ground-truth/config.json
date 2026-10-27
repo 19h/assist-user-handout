@@ -1,0 +1,1 @@
+{"c2":"https://updates.kestrel.example/api/v3/checkin","backup":"https://cdn-kestrel.example/u/fallback","sleep":3600,"jitter":15,"campaign":"KST-2026-Q4","mutex":"Local\\KestrelUpdateMtx","autostart":"HKCU\\Software\\Kestrel\\Updater\\RunOnLogon"}

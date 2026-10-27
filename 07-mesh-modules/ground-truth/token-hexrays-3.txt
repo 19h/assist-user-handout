@@ -1,0 +1,5 @@
+user=hexrays door=3
+secret=2164998d63b126966265a2c0f89738fc
+challenge=KLK2|hexrays|3|4c891494
+mac64=0xdba907a5dd912bb6
+token=b62b91dda507a9db

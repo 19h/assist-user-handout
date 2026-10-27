@@ -1,0 +1,15 @@
+$ kestrel-licensed <license> status
+license v3, 25 seats, expires day 20000, features 0x7
+  (exit 0)
+$ kestrel-licensed <license> unlock 7
+door 7: unlock command queued
+  (exit 0)
+$ kestrel-licensed <license> export /tmp/audit.csv
+audit log exported to /tmp/audit.csv
+  (exit 0)
+$ kestrel-licensed <license> svc KS-SERVICE-0451
+service mode: all doors released
+  (exit 0)
+$ kestrel-licensed <license> svc nope
+service mode: denied
+  (exit 1)

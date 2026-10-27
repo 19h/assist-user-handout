@@ -1,0 +1,16 @@
+0000000000001120 T main
+0000000000001730 t on_session_event
+0000000000001770 T session_new
+0000000000001860 T session_free
+0000000000001910 T session_feed
+00000000000019b0 T session_send_hello
+00000000000019f0 T session_authenticate
+0000000000001ad0 T session_grant_doors
+0000000000001b30 T session_enable_cipher
+0000000000001bc0 T session_touch
+0000000000001c10 T session_find
+0000000000001c40 T session_expire_idle
+0000000000001cd0 T session_state_name
+0000000000001d50 T session_clone_for_failover
+0000000000001dd0 T session_restore
+0000000000001e80 T session_dump

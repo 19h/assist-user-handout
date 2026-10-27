@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "ida": {
+      "command": "${HOME}/.idapro/plugins/assist/bin/assist",
+      "args": ["--mcp"]
+    }
+  }
+}

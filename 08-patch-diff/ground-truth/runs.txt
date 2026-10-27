@@ -1,0 +1,22 @@
+$ kestrel-bled-1.0 <benign>
+kestrel-bled 1.0.3
+msg seq=7 type=0x1 flags=0x3 name='door-7' payload=4 bytes
+  (exit 0)
+$ kestrel-bled-1.1 <benign>
+kestrel-bled 1.1.0
+msg seq=7 type=0x1 flags=0x3 name='door-7' payload=4 bytes
+  (exit 0)
+$ kestrel-bled-1.1 <poc>
+bled[7]: packet rejected: device name too long
+kestrel-bled 1.1.0
+parse error -90
+  (exit 0)
+$ host ASan build of 1.0 <poc>
+==92043==ERROR: AddressSanitizer: stack-buffer-overflow on address 0x00016b1f12d8 at pc 0x00010534ecc4 bp 0x00016b1f1030 sp 0x00016b1f07e0
+WRITE of size 129 at 0x00016b1f12d8 thread T0
+    #0 0x00010534ecc0 in __asan_memcpy+0x330 (libclang_rt.asan_osx_dynamic.dylib:arm64e+0x3ecc0)
+    #1 0x000104c0cf34 in parse_packet parse.c:61
+    #2 0x000104c0ca88 in handle_packet main.c:41
+    #3 0x000104c0c864 in main main.c:51
+    #0 0x000104c0c8a0 in handle_packet main.c:34
+SUMMARY: AddressSanitizer: stack-buffer-overflow parse.c:61 in parse_packet

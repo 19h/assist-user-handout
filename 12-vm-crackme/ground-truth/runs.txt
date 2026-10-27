@@ -1,0 +1,6 @@
+$ kestrel-vm Kestrel#VM26
+Maintenance mode unlocked. Welcome, engineer.
+$ kestrel-vm kestrel#vm26
+Wrong password.
+$ kestrel-vm hunter2
+Wrong password.

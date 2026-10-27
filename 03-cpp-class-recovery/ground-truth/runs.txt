@@ -1,0 +1,20 @@
+$ kestrel-transport tcp://gw.kestrel.example:7443
+[tcp] connect gw.kestrel.example:7443 (nodelay=1)
+[tcp] -> 19 bytes on fd 3
+[tcp] -> 16 bytes on fd 3
+[tcp] -> 15 bytes on fd 3
+tcp: state=2 mtu=1400 tx=50 rx=4
+[tcp] close fd 3
+$ kestrel-transport ble://c0:ff:ee:00:00:07 -v
+[ble] connected c0:ff:..:07 handle 0x47 mtu 247
+[log] open(ble) = 1
+[ble] notify #1 (19 bytes)
+[log] send(19) = 19
+[ble] notify #2 (16 bytes)
+[log] send(16) = 16
+[ble] notify #3 (15 bytes)
+[log] send(15) = 15
+ble: state=2 mtu=244 tx=50 rx=2
+$ kestrel-transport serial:///dev/ttyUSB0@57600
+[serial] /dev/ttyUSB0 57600 8N1
+serial: state=2 mtu=244 tx=50 rx=1

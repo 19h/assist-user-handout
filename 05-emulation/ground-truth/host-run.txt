@@ -1,0 +1,4 @@
+Kestrel Lockworks :: factory provisioning tool v3.2
+audit log: /var/kestrel/provision.log
+service endpoint: provisioning.kestrel.example:8443
+UNLOCK PIN for KS-0042-1337 (day 19000): 576785

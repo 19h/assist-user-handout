@@ -1,0 +1,12 @@
+{
+  "gateway.ip": "10.20.0.1",
+  "gateway.port": 7443,
+  "site.name": "Hex-Rays HQ, Liege",
+  "site.admin": "facility@kestrel.example",
+  "doors.count": 24,
+  "doors.auto_relock": true,
+  "doors.relock_seconds": 8,
+  "ble.pairing_code": "KS-PAIR-7741",
+  "ble.irk": "8f3c2a91d05e7b4466f1a0c3b2d95e17",
+  "telemetry.enabled": false
+}

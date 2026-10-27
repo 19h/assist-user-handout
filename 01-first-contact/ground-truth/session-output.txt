@@ -1,0 +1,7 @@
+gatewayd: /nonexistent not found, using factory defaults
+gateway KGW-000000 up 0s doors=00000000 auth=0
+login ok
+door 3 unlocked
+pairing code for nonce 1a2b3c4d: 567682
+telemetry queued
+gateway KGW-000000 up 120s doors=00000008 auth=1

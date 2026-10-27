@@ -1,0 +1,39 @@
+[
+ {
+  "scope": "global",
+  "category": "format",
+  "tags": ["kfwp", "firmware", "container", "header"],
+  "text": "Firmware container format (KFWP, 'kestrel firmware pack'): 0x40-byte header. 0x00 magic 'KFWP'; 0x04 major and 0x05 minor version, both BCD (0x03,0x12 = v3.12); 0x06 u16 header size = 0x40; 0x08 u32 total container size; 0x0C u32 header checksum; 0x10 u32 device id; 0x14 u16 section count; 0x16 u16 flags (bit0 = sections encrypted); 0x18 u64 build time (unix); 0x20..0x3F 32-byte signature. A section table follows the header: 0x18 bytes per entry = name[8], u32 offset, u32 size, u32 load address, u32 crc32 of the plaintext section. Parser/verifier is sub_1540, pretty-printer sub_1730, packer sub_1840."
+ },
+ {
+  "scope": "global",
+  "category": "checksum",
+  "tags": ["kfwp", "checksum", "adler"],
+  "text": "Firmware container header checksum (the u32 at header offset 0x0C) is computed by sub_1410(image, total_size, device_id): an Adler-32 variant with a = 0x4B53 (not 1) and b = 0, modulus 65521, summed over bytes 0x10 .. total_size-1 but SKIPPING the 32-byte signature field at 0x20..0x3F; the result is ((b << 16) | a) XOR rotl32(device_id, 8). So it covers device id, section count, flags, build time, the section table and all section data - but not magic/version/size/checksum (0x00..0x0F) and not the signature. Verified: sample.kfwp stores 0x8995847E and recomputes to 0x8995847E."
+ },
+ {
+  "scope": "global",
+  "category": "crypto",
+  "tags": ["kfwp", "encryption", "sections"],
+  "text": "Firmware container section encryption (header flags bit0, routine sub_14F0): XOR stream applied to each section separately, index i restarting at 0 per section; key byte i = byte(device_id >> 8*(i%4)) XOR byte(build_time >> 8*(i%8)) XOR (i*0x1D & 0xFF). The per-section crc32 (standard CRC-32, poly 0xEDB88320, sub_14A0) is over the DECRYPTED section, while the header checksum is over the bytes as stored (encrypted)."
+ },
+ {
+  "scope": "global",
+  "category": "pitfalls",
+  "tags": ["kfwp", "gotchas"],
+  "text": "Firmware container pitfalls when writing a parser or packer: (1) version bytes are BCD - 0x12 means 12, not 18; (2) the checksum seed is 0x4B53 ('KS'), so stock zlib.adler32 gives the wrong value even before the device-id fold; (3) the signature at 0x20..0x3F is excluded from the checksum, so re-signing does not change it; (4) sections are encrypted before the header checksum is computed (pack order: crc32 on plaintext, encrypt, then checksum)."
+ },
+ {
+  "scope": "global",
+  "category": "provenance",
+  "tags": ["kfwp", "handover"],
+  "text": "Firmware container (KFWP) analysis handover: header layout, checksum and section encryption were reversed and verified on 2026-10-09 against sample.kfwp (device 0x4B530107, 2 sections 'boot' and 'app', encrypted). All header fields and both section CRCs check out with a Python reimplementation. Open question: who produces the 32-byte signature - kestrel-fwpack only writes a placeholder (0xA5 ^ i)."
+ },
+ {
+  "scope": "local",
+  "function_address": "0x1410",
+  "category": "checksum",
+  "tags": ["kfwp", "checksum"],
+  "text": "This is the firmware container header checksum: Adler-32 variant seeded a=0x4B53, mod 65521, over 0x10..end skipping the signature 0x20..0x3F, folded with rotl32(device_id, 8). Suggested name: kfwp_checksum(const uint8_t *image, size_t total_size, uint32_t device_id)."
+ }
+]

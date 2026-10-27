@@ -1,0 +1,5 @@
+user=alice door=7
+secret=2a6c1e5ae929bd7c14c3dbeb8d016ac9
+challenge=KLK2|alice|7|d4a647e8
+mac64=0x414b33b3656612c0
+token=c0126665b3334b41

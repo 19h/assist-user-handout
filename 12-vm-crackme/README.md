@@ -1,0 +1,89 @@
+# 12 · Boss fight: a custom bytecode VM
+
+| | |
+|---|---|
+| Open | `kestrel-vm.i64`, one IDA instance |
+| Binary | Linux x86-64 ELF (PIE), Debian GCC 12 / glibc, `-O2`, stripped |
+| You'll try | reversing an interpreter, recovering an instruction set, having the agent write a disassembler, inverting the checks, confirming the answer by emulating the interpreter |
+| Agent time | 4–7 minutes |
+
+## The program
+
+`kestrel-vm <password>` unlocks the installer's maintenance mode. The password check is not x86 at all: it is a 559-byte program for a home-made virtual machine ("KVM") with 8 registers and 15 opcodes, numbered deliberately out of order. The interpreter is a big `switch`; the bytecode sits in `.rodata`. `ground-truth/runs.txt` shows the right and a wrong password.
+
+## Before you start
+
+1. Open `kestrel-vm.i64`, close other IDA instances, open the Assist panel (**Ctrl+Shift+K**), new conversation.
+2. Set *Run Python* to **Ask**: the agent will want to run its own disassembler, and you'll see the approval card. Answer "Allow for this session".
+3. Have a look at `main` (`0x1060`): `vm_run(k_check_program, 559, argv[1])`. Then `sub_11D0`: a big `switch` over byte values like 118, 60, 5, 0x17, 0x2A, 0x4D.
+
+## Prompt
+
+```
+kestrel-vm checks its maintenance password with a custom bytecode VM. Reverse the VM's instruction set, define the opcodes as an enum, write a disassembler for the embedded bytecode program, recover the password from it, and confirm it by emulating the VM.
+```
+
+## What to expect
+
+1. `decompile 0x11D0` gives the dispatcher. The agent tabulates each case: semantics and operand encoding.
+2. `create_enum kvm_opcode`, then `get_bytes 0x2080, 559` to read the program.
+3. The `python` tool runs the agent's disassembler over the bytes. The listing should match `ground-truth/disassembly.txt`.
+4. It sees the per-character pattern: `LDB r1, i; LDI r2, k; XOR; ROL8 r1, rot; MULI 0x9D; ADD i; ANDI 0xFF; CMPI expected; JNZ fail`, and inverts it, either with the modular inverse of `0x9D` (which is `0xB5` mod 256) and a rotate right, or by brute-forcing 0–255 per position.
+5. `emulate_function(0x11D0, [8320, 559, {"utf8": "Kestrel#VM26"}])` returns 1. A wrong password returns 0.
+
+Reference run (Claude Opus): 37 tool calls, 5½ minutes. It recovered the instruction set, created `kvm_opcode` (applied to the 15 dispatch compares) and `kvm_status`, typed the interpreter as `kvm_execute(const uint8_t *code, uint64_t len, const char *input)`, wrote a disassembler and per-block solver in Python, confirmed the password by emulating `vm_run` with two negative controls, and annotated the bytecode in the database one item per VM instruction. Its own suggested next step: an IDA processor module for KVM.
+
+## Check your results
+
+**Password: `Kestrel#VM26`.**
+
+| Mnemonic | Opcode | | Mnemonic | Opcode |
+|---|---|---|---|---|
+| `HALT` | `0x3C` | | `MULI` | `0x4D` |
+| `LDI` | `0x91` | | `ROL8` | `0xE3` |
+| `LDB` | `0x5E` | | `ANDI` | `0x76` |
+| `LEN` | `0xC2` | | `CMPI` | `0xB9` |
+| `ADD` | `0x17` | | `JNZ` | `0x05` |
+| `SUB` | `0x2A` | | `JMP` | `0xD0` |
+| `XOR` | `0x88` | | `FAIL` | `0x6F` |
+| | | | `OK` | `0xA4` |
+
+Encoding: registers are one byte, immediates are 32-bit little-endian, jumps are signed 16-bit relative to the next instruction. The program first checks `LEN == 12`. Per position *i*: `expected = (rol8(c ^ k, rot) * 0x9D + i) & 0xFF` with `k = (0x5A + 17 i) & 0xFF` and `rot = i % 7 + 1`.
+
+| i | char | k | rot | expected |
+|---|---|---|---|---|
+| 0 | `K` | 0x5A | 1 | 0xDA |
+| 1 | `e` | 0x6B | 2 | 0x59 |
+| 2 | `s` | 0x7C | 3 | 0x9A |
+| 3 | `t` | 0x8D | 4 | 0x86 |
+| 4 | `r` | 0x9E | 5 | 0x4D |
+| 5 | `e` | 0xAF | 6 | 0x2F |
+| 6 | `l` | 0xC0 | 7 | 0xC4 |
+| 7 | `#` | 0xD1 | 1 | 0x78 |
+| 8 | `V` | 0xE2 | 2 | 0xD2 |
+| 9 | `M` | 0xF3 | 3 | 0x4A |
+| 10 | `2` | 0x04 | 4 | 0xC1 |
+| 11 | `6` | 0x15 | 5 | 0x5F |
+
+| Function / data | Offset |
+|---|---|
+| `main` | `0x1060` |
+| `vm_run` | `0x11D0` |
+| `k_check_program` | `0x2080` (559 bytes) |
+
+`tools/vmasm.py` is the reference assembler and disassembler (`vmasm.py disasm`).
+
+## If it gets stuck
+
+* The first parameter of `vm_run` decompiles as `__int64`, not as a pointer. Pass the bytecode address to `emulate_function` as the **integer** `8320` (`0x2080`); an `{"address": …}` argument is rejected for non-pointer parameters.
+* Writing the disassembler to disk needs *Write files*. Keeping it inside the `python` tool doesn't.
+* `apply_enum` works on instruction operands. In the pseudocode the switch cases become readable through `set_lvar_type` on the opcode variable, or through comments.
+* "Read the 559 bytes at 0x2080 and disassemble them in Python using the opcode table you derived."
+* "Each character check is XOR, ROL8, MULI 0x9D, ADD i, AND 0xFF, CMPI. Invert it per position."
+
+## Files
+
+* `kestrel-vm`, `kestrel-vm.i64`
+* `src/`: `vm.c` (the interpreter), `vm.h`, `program.h` (the bytecode, generated by `tools/vmasm.py`), `main.c`.
+* `tools/vmasm.py`: assembler and reference disassembler.
+* `ground-truth/`: `disassembly.txt`, `runs.txt`, `symbols.txt`.

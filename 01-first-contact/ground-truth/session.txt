@@ -1,0 +1,7 @@
+status
+login admin kestrel
+unlock 3
+pair 1a2b3c4d
+tick 120
+telemetry
+status

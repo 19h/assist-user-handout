@@ -1,0 +1,2 @@
+Kestrel Lockworks :: factory provisioning tool v3.2
+debug: factory master override accepted, all doors released

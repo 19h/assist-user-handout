@@ -1,0 +1,6 @@
+$ lockctl alice 7 c0126665b3334b41
+ACCESS GRANTED: door 7 released for alice
+$ lockctl-static alice 7 c0126665b3334b41
+ACCESS GRANTED: door 7 released for alice
+$ lockctl alice 7 0000000000000000
+ACCESS DENIED: bad token for door 7

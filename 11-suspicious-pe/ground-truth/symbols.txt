@@ -1,0 +1,3 @@
+00000001400014a0 t host_fingerprint
+00000001400017d0 T decrypt_config
+0000000140002f20 T main
